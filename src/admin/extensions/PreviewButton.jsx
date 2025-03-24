@@ -37,7 +37,7 @@ const PreviewButtonForMessagge = () => {
         const endpoint = process.env.REACT_APP_PREVIEW_ENDPOINT;
         try {
           const response = await fetch(
-            `${domain}${endpoint}/${entryId}`
+            `http://localhost:1337/api/preview/message/${entryId}`
           );
           console.log("✅ Risposta API ricevuta:", response);
           const data = await response.json();
@@ -64,7 +64,7 @@ const PreviewButtonForMessagge = () => {
     }
     console.log("url costruita", previewUrl);
     const ts = new Date().getTime();
-    const cacheBustedUrl = `${domain}${endpoint}/{previewUrl}?ts=${ts}`;
+    const cacheBustedUrl = `http://localhost:1337${previewUrl}?ts=${ts}`;
     window.open(cacheBustedUrl, "_blank");
   };
 
@@ -152,14 +152,28 @@ const DataSegmentButton = ({ componentData }) => {
         Anteprima
       </Button>
       {/* Modale */}
+      {/* Modale */}
       {showModal && (
         <div style={styles.modalOverlay}>
           <div style={styles.modalContent}>
             <h3 style={{ color: "black", fontSize: "16px" }}>Risultato</h3>
-            {console.log("Render modale, apiResponse:", apiResponse)}
-            <p style={{ color: "black", fontSize: "16px" }}>
-              {apiResponse !== null ? apiResponse.toString() : "Nessun dato"}
-            </p>
+            {loading || apiResponse === null ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "100px",
+                }}
+              >
+                {/* Utilizzo del componente LoadingIndicator dal design system */}
+                <LoadingIndicator>Caricamento...</LoadingIndicator>
+              </div>
+            ) : (
+              <p style={{ color: "black", fontSize: "16px" }}>
+                {apiResponse.toString()}
+              </p>
+            )}
             <button onClick={closeModal}>Chiudi</button>
           </div>
         </div>

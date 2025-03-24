@@ -15,7 +15,7 @@ module.exports = {
 
             // URL dell'API esterna
             const externalApiUrl = 'http://localhost:3000/data';
-
+            await new Promise((resolve) => setTimeout(resolve, 10000));
             // Effettua la chiamata all'API esterna
             const externalResponse =  await axios.get(externalApiUrl, requestData, {
                 headers: {
