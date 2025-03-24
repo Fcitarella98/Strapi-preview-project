@@ -33,9 +33,11 @@ const PreviewButtonForMessagge = () => {
     const fetchPreviewUrl = async () => {
       if (entryId) {
         fetchAttempted.current = true;
+        const domain = process.env.REACT_APP_API_DOMAIN;
+        const endpoint = process.env.REACT_APP_PREVIEW_ENDPOINT;
         try {
           const response = await fetch(
-            `http://localhost:1337/api/preview/message/${entryId}`
+            `${domain}${endpoint}/${entryId}`
           );
           console.log("✅ Risposta API ricevuta:", response);
           const data = await response.json();
@@ -61,7 +63,9 @@ const PreviewButtonForMessagge = () => {
       return;
     }
     console.log("url costruita", previewUrl);
-    window.open(`http://localhost:1337${previewUrl}`, "_blank");
+    const ts = new Date().getTime();
+    const cacheBustedUrl = `${domain}${endpoint}/{previewUrl}?ts=${ts}`;
+    window.open(cacheBustedUrl, "_blank");
   };
 
   return (
@@ -69,7 +73,7 @@ const PreviewButtonForMessagge = () => {
       key={`preview-button-${entryId}`}
       variant="secondary"
       onClick={handlePreview}
-      style={{ marginLeft: "10px", width: "100%" }}
+      style={{ marginLeft: "10px", width: "200px" }}
       disabled={!previewUrl}
     >
       Anteprima
@@ -125,7 +129,7 @@ const DataSegmentButton = ({ componentData }) => {
       };
       console.log("Aggiornamento form values:", newValues);
       contentManagerContext.form.setValues(newValues);
-    }  else {
+    } else {
       console.warn("Metodo setFieldValue non disponibile nel form context");
     }
     setShowModal(true);
@@ -137,7 +141,7 @@ const DataSegmentButton = ({ componentData }) => {
   };
 
   return (
-    <div>
+    <div style={{ display: "flex", width: "100%" }}>
       {/* Bottone per aprire la modale */}
       <Button
         variant="secondary"
