@@ -69,7 +69,7 @@ const PreviewButtonForMessagge = () => {
       key={`preview-button-${entryId}`}
       variant="secondary"
       onClick={handlePreview}
-      style={{ marginLeft: "10px" }}
+      style={{ marginLeft: "10px", width: "100%" }}
       disabled={!previewUrl}
     >
       Anteprima
@@ -142,7 +142,7 @@ const DataSegmentButton = ({ componentData }) => {
       <Button
         variant="secondary"
         onClick={openModal}
-        style={{ marginLeft: "10px" }}
+        style={{ marginLeft: "10px", width: "100%" }}
         disabled={loading}
       >
         Anteprima
