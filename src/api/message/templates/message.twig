@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ nome }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #333; }
+        .content { max-width: 800px; margin: auto; }
+        .image { max-width: 100%; height: auto; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>{{ nome }}</h1>
+        <div>{{ descrizione|raw }}</div>
+
+        {% if immagine %}
+            <img src="{{ immagine }}" alt="{{ nome }}" class="image">
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "segments",
+  "info": {
+    "singularName": "segment",
+    "pluralName": "segments",
+    "displayName": "Segment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "Nome": {
+      "type": "string"
+    },
+    "Cognome": {
+      "type": "string"
+    },
+    "cellulare": {
+      "type": "biginteger"
+    },
+    "Email": {
+      "type": "email"
+    },
+    "uid": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "totale_segmenti": {
+      "type": "integer"
+    }
+  }
+}
