@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Button } from "@strapi/design-system";
 import { unstable_useContentManagerContext as useContentManagerContext } from "@strapi/strapi/admin";
+import LoadingIndicator from "./LoadingIndicator";
 
 const PreviewButtonForMessagge = () => {
   const contentManagerContext = useContentManagerContext();
@@ -73,7 +74,10 @@ const PreviewButtonForMessagge = () => {
       key={`preview-button-${entryId}`}
       variant="secondary"
       onClick={handlePreview}
-      style={{ marginLeft: "10px", width: "200px" }}
+      style={{  height: "40px",
+        width: "200px",    // Altezza maggiore
+        fontSize: "18px", 
+        marginRight: "10px" }}
       disabled={!previewUrl}
     >
       Anteprima
@@ -117,6 +121,12 @@ const DataSegmentButton = ({ componentData }) => {
 
   const openModal = () => {
     console.log("openModal called, apiResponse:", apiResponse);
+    setShowModal(true);
+    if (apiResponse === null) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
     // Aggiorna il campo "TotaleSegmenti" nel form
     if (
       contentManagerContext &&
@@ -146,12 +156,15 @@ const DataSegmentButton = ({ componentData }) => {
       <Button
         variant="secondary"
         onClick={openModal}
-        style={{ marginLeft: "10px", width: "100%" }}
-        disabled={loading}
+        style={{
+          height: "40px",
+          width: "200px",    // Altezza maggiore
+          fontSize: "18px", 
+          marginRight: "10px"
+        }}
       >
         Anteprima
       </Button>
-      {/* Modale */}
       {/* Modale */}
       {showModal && (
         <div style={styles.modalOverlay}>
@@ -163,10 +176,10 @@ const DataSegmentButton = ({ componentData }) => {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                  height: "100px",
+                  width: "100%",
+                  minHeight: "100px",
                 }}
               >
-                {/* Utilizzo del componente LoadingIndicator dal design system */}
                 <LoadingIndicator>Caricamento...</LoadingIndicator>
               </div>
             ) : (
