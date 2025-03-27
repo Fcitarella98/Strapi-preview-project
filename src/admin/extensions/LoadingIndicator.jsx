@@ -14,7 +14,7 @@ const LoadingIndicator = () => {
           animation: "spin 1s linear infinite",
         }}
       />
-      <span style={{ marginLeft: "10px" }}>Caricamento...</span>
+      <span style={{ marginLeft: "10px" }}></span>
       <style>
         {`
           @keyframes spin {

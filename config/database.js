@@ -48,6 +48,9 @@ module.exports = ({ env }) => {
       },
       useNullAsDefault: true,
     },
+    endpoint:{
+      apiDomain: env('REACT_APP_API_DOMAIN')
+    }
   };
 
   return {

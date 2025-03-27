@@ -1,0 +1,11 @@
+/* styles.css */
+.my-big-button {
+    margin-left: -5px;
+    width: 100% !important;
+    font-size: 16px !important;
+    padding: 0 20px !important;
+    flex: 1 !important;
+  }
+  .sc-FEMpB.khlocw.sc-gjcoXW.cMVucY > div:nth-child(2)[style*="margin-left:10px"] {
+    width: 100% !important;
+  }

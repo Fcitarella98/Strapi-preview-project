@@ -1,21 +1,29 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useMemo, useEffect, useState, useRef } from "react";
 import { Button } from "@strapi/design-system";
 import { unstable_useContentManagerContext as useContentManagerContext } from "@strapi/strapi/admin";
 import LoadingIndicator from "./LoadingIndicator";
+import "./styles.css";
+
 
 const PreviewButtonForMessagge = () => {
+
   const contentManagerContext = useContentManagerContext();
+
   console.log("Content manager = ", contentManagerContext);
   if (!contentManagerContext || !contentManagerContext.form) {
     return null; // Evita errori se il form non è ancora pronto
   }
+
   const fetchAttempted = useRef(false);
   const { form, isCreatingEntry, status, layout, id } = contentManagerContext;
   console.log("id = ", id);
   console.log("form = ", form);
   const [entryId, setEntryId] = useState(id);
   const [previewUrl, setPreviewUrl] = useState("");
-
+  const memoizedInitialValues = useMemo(
+    () => JSON.stringify(form.initialValues),
+    [form.initialValues]
+  );
   // 🔹 Recupera l'ID una volta disponibile
   useEffect(() => {
     if (!isCreatingEntry && form?.initialValues?.nome) {
@@ -24,15 +32,11 @@ const PreviewButtonForMessagge = () => {
     }
   }, [form.initialData, isCreatingEntry]);
 
-  useEffect(() => {
-    // Reset del flag quando entryId cambia
-    fetchAttempted.current = false;
-  }, [id]);
 
   // 🔹 Ottieni l'URL di preview dinamicamente
   useEffect(() => {
     const fetchPreviewUrl = async () => {
-      if (entryId) {
+      if (entryId && !fetchAttempted.current) {
         fetchAttempted.current = true;
         const domain = process.env.REACT_APP_API_DOMAIN;
         const endpoint = process.env.REACT_APP_PREVIEW_ENDPOINT;
@@ -50,11 +54,12 @@ const PreviewButtonForMessagge = () => {
         } catch (error) {
           console.error("Errore nel recupero dell'URL di preview:", error);
         }
+
       }
     };
 
     fetchPreviewUrl();
-  }, [id, JSON.stringify(form.initialValues)]);
+  }, [entryId]);
 
   // 🔹 Pulsante di anteprima
   const handlePreview = () => {
@@ -63,9 +68,13 @@ const PreviewButtonForMessagge = () => {
       alert("Salva il contenuto prima di visualizzare la preview.");
       return;
     }
+
+
+    // Logga le variabili d'ambiente per verificarle
+
     console.log("url costruita", previewUrl);
     const ts = new Date().getTime();
-    const cacheBustedUrl = `http://localhost:1337${previewUrl}?ts=${ts}`;
+    const cacheBustedUrl = `${adminConfig.apiDomain}${previewUrl}?ts=${ts}`;
     window.open(cacheBustedUrl, "_blank");
   };
 
@@ -74,10 +83,8 @@ const PreviewButtonForMessagge = () => {
       key={`preview-button-${entryId}`}
       variant="secondary"
       onClick={handlePreview}
-      style={{  height: "40px",
-        width: "200px",    // Altezza maggiore
-        fontSize: "18px", 
-        marginRight: "10px" }}
+      className="my-big-button"
+      style={{ marginLeft: "10px" }}
       disabled={!previewUrl}
     >
       Anteprima
@@ -86,19 +93,37 @@ const PreviewButtonForMessagge = () => {
 };
 
 const DataSegmentButton = ({ componentData }) => {
+  
   const contentManagerContext = useContentManagerContext();
   const [loading, setLoading] = useState(false);
   const [apiResponse, setApiResponse] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    // Utilizza un selettore molto specifico per individuare il div problematico.
+    const targetDiv = document.querySelector(
+      ".sc-FEMpB.khlocw.sc-gjcoXW.cMVucY > div:nth-child(2)"
+    );
+    if (targetDiv) {
+      // Imposta direttamente lo stile inline
+      targetDiv.style.width = "100%";
+      // Se serve, puoi anche rimuovere il margin-left applicato
+      targetDiv.style.marginLeft = "0";
+    }
+  }, []);
   // Log per capire quando componentData cambia
   useEffect(() => {
+
+    const domain = process.env.REACT_APP_API_DOMAIN || "http://localhost:1337";
+    // Puoi definire una variabile specifica per questo endpoint oppure usare una stringa di default
+    const endpoint = process.env.REACT_APP_TOTAL_SEGMENT_ENDPOINT || "/api/total-segment";
+    console.log("DOMAIN :", domain);
     console.log("DataSegmentButton useEffect: componentData changed:", componentData);
     if (componentData && Object.keys(componentData).length > 0) {
       const sendData = async () => {
         setLoading(true);
         try {
-          const response = await fetch("http://localhost:1337/api/total-segment", {
+          const response = await fetch(`${domain}${endpoint}`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -147,6 +172,12 @@ const DataSegmentButton = ({ componentData }) => {
 
   const closeModal = () => {
     console.log("closeModal called");
+    const newValues = {
+      ...contentManagerContext.form.values,
+      totale_segmenti: apiResponse,
+    };
+    console.log("Aggiornamento form values:", newValues);
+      contentManagerContext.form.setValues(newValues);
     setShowModal(false);
   };
 
@@ -156,12 +187,8 @@ const DataSegmentButton = ({ componentData }) => {
       <Button
         variant="secondary"
         onClick={openModal}
-        style={{
-          height: "40px",
-          width: "200px",    // Altezza maggiore
-          fontSize: "18px", 
-          marginRight: "10px"
-        }}
+        size="L"
+        className="my-big-button"
       >
         Anteprima
       </Button>
@@ -180,7 +207,7 @@ const DataSegmentButton = ({ componentData }) => {
                   minHeight: "100px",
                 }}
               >
-                <LoadingIndicator>Caricamento...</LoadingIndicator>
+                <LoadingIndicator></LoadingIndicator>
               </div>
             ) : (
               <p style={{ color: "black", fontSize: "16px" }}>
