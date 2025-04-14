@@ -1,0 +1,23 @@
+{
+  "kind": "collectionType",
+  "collectionName": "my_content_types",
+  "info": {
+    "singularName": "my-content-type",
+    "pluralName": "my-content-types",
+    "displayName": "my-content-type"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "Titolo": {
+      "type": "string"
+    },
+    "Uid": {
+      "type": "string"
+    },
+    "descrizione": {
+      "type": "blocks"
+    }
+  }
+}

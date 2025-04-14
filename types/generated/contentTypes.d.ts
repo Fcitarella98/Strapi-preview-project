@@ -400,6 +400,37 @@ export interface ApiMessageMessage extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiMyContentTypeMyContentType
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'my_content_types';
+  info: {
+    displayName: 'my-content-type';
+    pluralName: 'my-content-types';
+    singularName: 'my-content-type';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    descrizione: Schema.Attribute.Blocks;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::my-content-type.my-content-type'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    Titolo: Schema.Attribute.String;
+    Uid: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiSegmentSegment extends Struct.CollectionTypeSchema {
   collectionName: 'segments';
   info: {
@@ -946,6 +977,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::message.message': ApiMessageMessage;
+      'api::my-content-type.my-content-type': ApiMyContentTypeMyContentType;
       'api::segment.segment': ApiSegmentSegment;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
