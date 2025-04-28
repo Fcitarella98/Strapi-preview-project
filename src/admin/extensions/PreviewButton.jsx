@@ -3,11 +3,21 @@ import { Button } from "@strapi/design-system";
 import { unstable_useContentManagerContext as useContentManagerContext } from "@strapi/strapi/admin";
 import LoadingIndicator from "./LoadingIndicator";
 import "./styles.css";
+import styled from 'styled-components';
+import { LinkButton } from '@strapi/design-system';
 import renderRichTextNodes from './renderRichTextNodes';
-
+import DetectTranslateModal from './DetectTranslateModal';
 
 const PreviewButtonForMessagge = () => {
 
+  const LinkButtonStyled = styled(LinkButton)`
+  width: 100%;
+
+  // Fix visited state color for the icon.
+  &:visited {
+    color: ${({ theme }) => theme.colors.primary700};
+  }
+`;
   const contentManagerContext = useContentManagerContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [contentData, setContentData] = useState(null);
@@ -54,7 +64,8 @@ const PreviewButtonForMessagge = () => {
         // Recupera il contenuto HTML dalla risposta
         const htmlContent = await response.text();
         // Apri una nuova finestra/scheda con target _blank
-        const newWindow = window.open('', '_blank');
+        // Definisci il meta tag per la viewport mobile
+        const newWindow = window.open('', '_blank', 'width=375,height=667');
         if (newWindow) {
           newWindow.document.open();
           newWindow.document.write(htmlContent);
@@ -149,9 +160,9 @@ const PreviewButtonForMessagge = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: '1rem' }}>
-      <Button onClick={handleClick}>
+      <LinkButtonStyled onClick={handleClick}>
         Anteprima
-      </Button>
+      </LinkButtonStyled>
       <Button onClick={handleHelpClick} variant="secondary">
         Help
       </Button>
@@ -214,6 +225,7 @@ const PreviewButtonForMessagge = () => {
           </div>
         </div>
       )}
+      <DetectTranslateModal />
     </div>
   );
 };
