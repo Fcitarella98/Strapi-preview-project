@@ -83,6 +83,7 @@ const DetectTranslateModal = () => {
     }
   };
   return (
+    //
     <>
       <Button onClick={openModal} variant="secondary" style={{ marginTop: 16 }}>
         Traduci {detected.name && `(${detected.name})`}
