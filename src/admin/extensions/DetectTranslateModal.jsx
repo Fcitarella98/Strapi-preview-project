@@ -31,6 +31,57 @@ const DetectTranslateModal = () => {
   const [hasConfirmed, setHasConfirmed] = useState(false);
   const [error, setError] = useState(null);
   const locales = SUPPORTED_LOCALES;
+  const francToIso1Map = {
+    afr: 'af',  // Afrikaans
+    ara: 'ar',  // Arabic
+    ben: 'bn',  // Bengali
+    bre: 'br',  // Breton
+    bul: 'bg',  // Bulgarian
+    cat: 'ca',  // Catalan
+    ces: 'cs',  // Czech
+    cym: 'cy',  // Welsh
+    dan: 'da',  // Danish
+    deu: 'de',  // German
+    ell: 'el',  // Greek
+    eng: 'en',  // English
+    epo: 'eo',  // Esperanto
+    est: 'et',  // Estonian
+    fin: 'fi',  // Finnish
+    fra: 'fr',  // French
+    glg: 'gl',  // Galician
+    heb: 'he',  // Hebrew
+    hin: 'hi',  // Hindi
+    hrv: 'hr',  // Croatian
+    hun: 'hu',  // Hungarian
+    ind: 'id',  // Indonesian
+    isl: 'is',  // Icelandic
+    ita: 'it',  // Italian
+    jpn: 'ja',  // Japanese
+    khm: 'km',  // Khmer
+    kor: 'ko',  // Korean
+    lav: 'lv',  // Latvian
+    lit: 'lt',  // Lithuanian
+    mar: 'mr',  // Marathi
+    nld: 'nl',  // Dutch
+    nor: 'no',  // Norwegian
+    pol: 'pl',  // Polish
+    por: 'pt',  // Portuguese
+    ron: 'ro',  // Romanian
+    rus: 'ru',  // Russian
+    slk: 'sk',  // Slovak
+    slv: 'sl',  // Slovenian
+    spa: 'es',  // Spanish
+    swa: 'sw',  // Swahili
+    swe: 'sv',  // Swedish
+    tam: 'ta',  // Tamil
+    tel: 'te',  // Telugu
+    tur: 'tr',  // Turkish
+    ukr: 'uk',  // Ukrainian
+    urd: 'ur',  // Urdu
+    vie: 'vi',  // Vietnamese
+    zho: 'zh',  // Chinese
+  };
+
   const openModal = () => {
     setError(null);
     setHasConfirmed(false);
@@ -41,18 +92,24 @@ const DetectTranslateModal = () => {
   const closeModal = () => setIsOpen(false);
   // Rileva la lingua all'avvio e ad ogni cambio di initialData
   useEffect(() => {
-    const html = initialValues?.Descrizione ?? initialValues?.Nome ?? '';
-    console.log("Html:", html);
-    if (html) {
-      const text = htmlToText(html, { wordwrap: false, selectors: [] });
-      const iso3 = franc(text);
-      const entry = iso6393.find(lang => lang.iso6393 === iso3);
-      setDetected({
-        code: iso3 === 'und' ? 'unknown' : entry?.iso6391 || iso3,
-        name: entry ? entry.name : 'Unknown',
-      });
-    }
-  }, [form]);
+  const html = initialValues?.Descrizione ?? initialValues?.Nome ?? '';
+  if (!html) return;
+
+  const text = htmlToText(html, { wordwrap: false, selectors: [] });
+  const iso3 = franc(text); // es. "ita", "eng", etc.
+
+  if (iso3 === 'und') {
+    setDetected({ code: 'unknown', name: 'Unknown' });
+  } else {
+    const iso1 = francToIso1Map[iso3] || iso3; 
+    const matched = SUPPORTED_LOCALES.find(l => l.code === iso1);
+
+    setDetected({
+      code: iso1,
+      name: matched?.name || 'Unknown',
+    });
+  }
+}, [form])
 
   const handleConfirm = async () => {
     if (!id || !selectedLocale || selectedLocale === detected.code) {
